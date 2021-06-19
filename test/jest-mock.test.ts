@@ -1,18 +1,17 @@
-const NodeSentry = require('@sentry/node')
-const sentryTestkit = require('../src/index')
+const { testkit } = require('../src/jestMock')
+const Sentry = require('@sentry/browser')
+require('@sentry/tracing')
 const { createCommonTests } = require('./commonTests')
 
-const { testkit, sentryTransport } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
-const Sentry = NodeSentry
-describe('sentry test-kit test suite - @sentry/node', function() {
+
+describe('jest mock integration tests', function () {
   beforeAll(() =>
     Sentry.init({
       dsn: DUMMY_DSN,
       release: 'test',
       tracesSampleRate: 1,
-      transport: sentryTransport,
-      beforeSend(event) {
+      beforeSend(event: import('@sentry/browser').Event) {
         event.extra = { os: 'mac-os' }
         return event
       },
